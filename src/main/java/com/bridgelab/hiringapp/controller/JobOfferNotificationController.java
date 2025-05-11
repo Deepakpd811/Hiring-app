@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/candidates")
+@RequestMapping("admin/api/candidates")
 @Slf4j
 public class JobOfferNotificationController {
 

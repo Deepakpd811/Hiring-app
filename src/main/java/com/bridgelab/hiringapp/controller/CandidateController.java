@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/candidates")
+@RequestMapping("/admin/api/candidates")
 public class CandidateController {
 
     @Autowired
@@ -41,6 +41,7 @@ public class CandidateController {
         List<Candidate> hiredCandidates = candidateService.hiredCandidate();
         return BuildResponse.success(hiredCandidates, "List of hired candidates", request.getRequestURI());
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponseDto> createCandidate(@RequestBody CandidateDto candidateDto, HttpServletRequest request) {

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/candidates")
+@RequestMapping("user/api/candidates")
 public class BankInfoController {
 
     @Autowired

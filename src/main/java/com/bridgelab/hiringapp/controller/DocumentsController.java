@@ -12,11 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RestController
-@RequestMapping("/api/candidates")
+@RequestMapping("/user/api/candidates")
 public class DocumentsController {
 
     @Autowired
     private DocumentService documentService;
+
 
     @PostMapping(path = "{id}/upload-document", consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDto> uploadDocument(
