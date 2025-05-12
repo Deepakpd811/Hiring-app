@@ -6,6 +6,7 @@ import com.bridgelab.hiringapp.dto.RegisterDto;
 import com.bridgelab.hiringapp.service.AuthService;
 import com.bridgelab.hiringapp.utils.BuildResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +24,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseDto> register(HttpServletRequest request, @RequestBody RegisterDto requestdto) {
+    public ResponseEntity<ApiResponseDto> register(HttpServletRequest request,@Valid @RequestBody RegisterDto requestdto) {
         String msg = authService.register(requestdto);
         return BuildResponse.success(null,msg,request.getRequestURI());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDto> login(HttpServletRequest request,@RequestBody LoginDto requestdto) {
+    public ResponseEntity<ApiResponseDto> login(HttpServletRequest request,@Valid @RequestBody LoginDto requestdto) {
         Map<String, String > data =authService.login(requestdto);
         return BuildResponse.success(data,"Token generated", request.getRequestURI());
     }

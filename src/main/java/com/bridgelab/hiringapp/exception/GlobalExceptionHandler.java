@@ -7,14 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler  {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -30,9 +29,10 @@ public class GlobalExceptionHandler {
         ApiResponseDto response = ApiResponseDto.builder()
                 .timestamp(LocalDateTime.now().toString())
                 .status(HttpStatus.BAD_REQUEST.toString())
-                .message("Validation failed")
+                .message("Validation valid")
                 .error("Bad Request")
                 .path(request.getRequestURI())
+                .data(errors)
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -41,13 +41,13 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler
-    public ResponseEntity<ApiResponseDto> CandidateNotFoundException(CandidateNotFoundException ex) {
+    public ResponseEntity<ApiResponseDto> CandidateNotFoundException(CandidateNotFoundException ex, HttpServletRequest request) {
 
         ApiResponseDto err = ApiResponseDto.builder()
                 .error("Bad Request")
                 .message("Candidate with id " + ex.getId() + " does not exist")
                 .status(HttpStatus.NOT_FOUND.toString())
-                .path(ex.getPath())
+                .path(request.getRequestURI())
                 .timestamp(LocalTime.now().toString())
                 .build();
 
@@ -55,13 +55,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ApiResponseDto> resourceNotFoundException(ResourceNotFoundException ex) {
+    public ResponseEntity<ApiResponseDto> resourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
 
         ApiResponseDto err = ApiResponseDto.builder()
                 .error("Bad Request")
                 .message(ex.getMessage())
                 .status(HttpStatus.NOT_FOUND.toString())
-                .path("ds")
+                .path(request.getRequestURI())
                 .timestamp(LocalTime.now().toString())
                 .build();
 
@@ -69,17 +69,33 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ApiResponseDto> NotificationSendException(NotificationSendException ex) {
+    public ResponseEntity<ApiResponseDto> NotificationSendException(NotificationSendException ex, HttpServletRequest request) {
 
         ApiResponseDto err = ApiResponseDto.builder()
                 .error("Bad Request")
                 .message(ex.getMessage())
                 .status(HttpStatus.NOT_FOUND.toString())
-                .path("path/--")
+                .path(request.getRequestURI())
                 .timestamp(LocalTime.now().toString())
                 .build();
 
         return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
+
+
+
+    @ExceptionHandler(EmailAlreadyExistException.class)
+    public ResponseEntity<ApiResponseDto> handleCustomBadRequest(EmailAlreadyExistException ex, HttpServletRequest request) {
+        ApiResponseDto response = ApiResponseDto.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .message(ex.getMessage())
+                .error("Bad Request")
+                .path(request.getRequestURI())
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 

@@ -6,6 +6,7 @@ import com.bridgelab.hiringapp.entity.Candidate;
 import com.bridgelab.hiringapp.service.CandidateService;
 import com.bridgelab.hiringapp.utils.BuildResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class UserController {
     CandidateService candidateService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseDto> createCandidate(@RequestBody CandidateDto candidateDto, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDto> createCandidate(@Valid  @RequestBody CandidateDto candidateDto, HttpServletRequest request) {
         Candidate createdCandidate = candidateService.createCandidateData(candidateDto);
         return BuildResponse.success(createdCandidate, "Candidate created successfully", request.getRequestURI());
     }

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.function.Function;
@@ -19,7 +18,7 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    private static final long JWT_EXPIRATION = 86400000L; // 1 day
+    private static final long JWT_EXPIRATION = 5 * 60 * 1000L; // 5min expiration
 
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);

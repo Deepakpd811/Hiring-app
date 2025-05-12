@@ -5,6 +5,7 @@ import com.bridgelab.hiringapp.entity.Candidate;
 import com.bridgelab.hiringapp.service.CandidateService;
 import com.bridgelab.hiringapp.utils.BuildResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +45,14 @@ public class CandidateController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseDto> createCandidate(@RequestBody CandidateDto candidateDto, HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDto> createCandidate(@Valid @RequestBody CandidateDto candidateDto, HttpServletRequest request) {
         Candidate createdCandidate = candidateService.createCandidateData(candidateDto);
         return BuildResponse.success(createdCandidate, "Candidate created successfully", request.getRequestURI());
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<ApiResponseDto> updateCandidateStatus(@PathVariable Long id,
-                                                                @RequestBody StatusUpdateDto statusDto,
+                                                                @Valid @RequestBody StatusUpdateDto statusDto,
                                                                 HttpServletRequest request) {
         Candidate updatedCandidate = candidateService.updateStatusByid(id, request.getRequestURI(), statusDto);
         return BuildResponse.success(updatedCandidate, "Candidate status updated successfully", request.getRequestURI());

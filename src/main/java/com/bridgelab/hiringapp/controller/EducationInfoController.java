@@ -8,6 +8,7 @@ import com.bridgelab.hiringapp.entity.EducationInfo;
 import com.bridgelab.hiringapp.service.EducationInfoService;
 import com.bridgelab.hiringapp.utils.BuildResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class EducationInfoController {
 
     @PutMapping("{id}/education-info")
     public ResponseEntity<ApiResponseDto> updateStatusById(HttpServletRequest request,
-                                                           @RequestBody EducationInfoDto educationInfoDto,
+                                                           @Valid  @RequestBody EducationInfoDto educationInfoDto,
                                                            @PathVariable Long id) {
         EducationInfo data = educationInfoService.
                 postPersonalInfoAndUpdateCandidate(id,request.getRequestURI(), educationInfoDto);

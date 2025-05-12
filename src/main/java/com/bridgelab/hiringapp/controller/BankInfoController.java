@@ -6,6 +6,7 @@ import com.bridgelab.hiringapp.entity.BankInfo;
 import com.bridgelab.hiringapp.service.BankInfoService;
 import com.bridgelab.hiringapp.utils.BuildResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class BankInfoController {
     BankInfoService bankInfoService;
 
     @PutMapping("{id}/bank-info")
-    public ResponseEntity<ApiResponseDto> updateStatusById(HttpServletRequest request, @RequestBody BankInfoDto bankInfoDto,
+    public ResponseEntity<ApiResponseDto> updateStatusById(HttpServletRequest request, @Valid @RequestBody BankInfoDto bankInfoDto,
                                                            @PathVariable Long id) {
 
         BankInfo data = bankInfoService.postPersonalInfoAndUpdateCandidate(id, request.getRequestURI(), bankInfoDto);
