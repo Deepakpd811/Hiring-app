@@ -14,9 +14,6 @@ public class MessageConsumer {
     @Autowired
     private SendMailUtil email;
 
-    //  This method is annotated with @RabbitListener, which tells Spring Boot
-    //  to listen for messages on the specified queue.  When a message arrives
-    //  on the "job.offer.notification.queue", this method will be invoked.
     @RabbitListener(queues = "job.offer.notification.queue")
     public void receiveMessage(EmailDto emailDTO) {
         System.out.println("Received message: " + emailDTO); //  Log

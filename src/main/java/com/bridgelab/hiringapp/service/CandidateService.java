@@ -5,9 +5,12 @@ import com.bridgelab.hiringapp.dto.OnboardStatusDto;
 import com.bridgelab.hiringapp.dto.StatusUpdateDto;
 import com.bridgelab.hiringapp.entity.Candidate;
 import com.bridgelab.hiringapp.exception.CandidateNotFoundException;
+import com.bridgelab.hiringapp.exception.EmailAlreadyExistException;
 import com.bridgelab.hiringapp.exception.ResourceNotFoundException;
 import com.bridgelab.hiringapp.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,15 +21,13 @@ public class CandidateService {
     @Autowired
     CandidateRepository candidateRepository;
 
-    public List<Candidate> getCandidateData() {
-       List<Candidate>  candidates = candidateRepository.findAll();
+    public Page<Candidate> getCandidateData(Pageable pageable) {
+       Page<Candidate>  candidates = candidateRepository.findAll(pageable);
 
        if(candidates.isEmpty()){
            throw new ResourceNotFoundException("No candidate data found");
        }
-
        return candidates;
-
     }
 
 
@@ -37,6 +38,11 @@ public class CandidateService {
 
 
     public Candidate createCandidateData(CandidateDto dto) {
+
+        if (candidateRepository.existsByEmail(dto.getEmail())) {
+            throw new EmailAlreadyExistException("Candidate with this email already exists");
+        }
+
         Candidate c1 = new Candidate(dto);
         System.out.println(c1);
         return candidateRepository.save(c1);

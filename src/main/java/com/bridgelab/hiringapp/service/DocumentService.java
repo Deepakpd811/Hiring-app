@@ -4,6 +4,7 @@ import com.bridgelab.hiringapp.dto.DocumentDto;
 import com.bridgelab.hiringapp.entity.Candidate;
 import com.bridgelab.hiringapp.entity.Document;
 import com.bridgelab.hiringapp.exception.CandidateNotFoundException;
+import com.bridgelab.hiringapp.exception.ResourceNotFoundException;
 import com.bridgelab.hiringapp.repository.CandidateRepository;
 import com.bridgelab.hiringapp.repository.DocumentRepository;
 import com.bridgelab.hiringapp.utils.FileUploadUtil;
@@ -34,7 +35,6 @@ public class DocumentService {
 
             Document document = new Document(dto);
 
-
             document.setCandidate(candidate);
 
             documentRepository.save(document);
@@ -43,5 +43,13 @@ public class DocumentService {
 
 
         }
+
+    public Document updateVerifiedDocumentByid(Long id, String path) {
+        Document document = documentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id+""));
+
+        document.setVerified(true);
+        return documentRepository.save(document);
+    }
 
 }

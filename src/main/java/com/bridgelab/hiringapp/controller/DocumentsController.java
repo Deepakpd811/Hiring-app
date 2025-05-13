@@ -31,9 +31,5 @@ public class DocumentsController {
         return BuildResponse.success(url,"Status is updated successfully",request.getRequestURI());
     }
 
-//    @PutMapping("/{id}/download-document")
-//    public ResponseEntity<ApiResponseDto> downloadDocument(){
-//
-//    }
 
 }

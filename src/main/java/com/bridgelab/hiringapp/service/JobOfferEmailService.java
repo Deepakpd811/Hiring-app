@@ -12,8 +12,6 @@ import com.bridgelab.hiringapp.repository.JobOfferNotificationRepository;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,12 +34,12 @@ public class JobOfferEmailService {
                 .orElseThrow(() -> new CandidateNotFoundException(id, " not found"));
 
         // job offer table notification
-        JobOfferNotification notification;
+        JobOfferNotification notification; // entity
 
         // Email info
         EmailDto emailDto = EmailDto.builder()
                 .subject("Email for job offer")
-                .body("your current status for applied job" + candidate.getStatus())
+                .body("your current status for applied job " + candidate.getStatus())
                 .to(candidate.getEmail())
                 .build();
 
@@ -74,7 +72,7 @@ public class JobOfferEmailService {
                     .build();
             notification = new JobOfferNotification(dto, candidate);  // set the candidate in  table
 
-            // Persist the failed attempt, then rethrow
+            // save the fail
             jobOfferNotificationRepository.save(notification);
             throw new NotificationSendException("Failed to send job offer notification", e);
         }

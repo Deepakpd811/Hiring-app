@@ -7,13 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class GlobalExceptionHandler  {
+public class GlobalExceptionHandler   {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -81,7 +82,6 @@ public class GlobalExceptionHandler  {
 
         return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
     }
-
 
 
     @ExceptionHandler(EmailAlreadyExistException.class)
