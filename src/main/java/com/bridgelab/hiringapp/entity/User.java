@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,12 +19,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
-}
 
+    // OTP fields
+    @Column(length = 6)
+    private String otp;
+
+    private boolean isOtpVerified;
+
+    @Column(name = "otpGenerated_at", columnDefinition = "DATETIME")
+    private LocalDateTime otpGeneratedAt;
+}

@@ -97,6 +97,33 @@ public class GlobalExceptionHandler   {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(EmailSendFailedException.class)
+    public ResponseEntity<ApiResponseDto> emailFailedException(EmailSendFailedException ex, HttpServletRequest request) {
+        ApiResponseDto response = ApiResponseDto.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .message(ex.getMessage())
+                .error("Bad Request")
+                .path(request.getRequestURI())
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+ @ExceptionHandler(InvalidException.class)
+    public ResponseEntity<ApiResponseDto> invalidException(InvalidException ex, HttpServletRequest request) {
+        ApiResponseDto response = ApiResponseDto.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .message(ex.getMessage())
+                .error("Bad Request")
+                .path(request.getRequestURI())
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 
 

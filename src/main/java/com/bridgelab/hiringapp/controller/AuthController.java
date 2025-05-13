@@ -2,6 +2,7 @@ package com.bridgelab.hiringapp.controller;
 
 import com.bridgelab.hiringapp.dto.ApiResponseDto;
 import com.bridgelab.hiringapp.dto.LoginDto;
+import com.bridgelab.hiringapp.dto.OtpDto;
 import com.bridgelab.hiringapp.dto.RegisterDto;
 import com.bridgelab.hiringapp.service.AuthService;
 import com.bridgelab.hiringapp.utils.BuildResponse;
@@ -9,11 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
@@ -33,5 +30,13 @@ public class AuthController {
     public ResponseEntity<ApiResponseDto> login(HttpServletRequest request,@Valid @RequestBody LoginDto requestdto) {
         Map<String, String > data =authService.login(requestdto);
         return BuildResponse.success(data,"Token generated", request.getRequestURI());
+    }
+
+    @PostMapping("/{id}/otp-verify")
+    public ResponseEntity<ApiResponseDto> verify(HttpServletRequest request, @Valid @RequestBody OtpDto otpDto, @PathVariable Long id) {
+
+
+        String msg =authService.otpVerify(id,otpDto);
+        return BuildResponse.success(null,msg, request.getRequestURI());
     }
 }

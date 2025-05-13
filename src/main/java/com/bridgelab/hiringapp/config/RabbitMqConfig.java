@@ -46,6 +46,27 @@ public class RabbitMqConfig {
     }
 
 
+    // otp queue
+
+    @Bean
+    public Queue otpVerificationQueue() {
+        return QueueBuilder.durable("otp_queue").build(); // Durable queue
+    }
+
+    @Bean
+    public DirectExchange otpVerificationExchange() {
+        return new DirectExchange("user.otp.exchange");
+    }
+
+    @Bean
+    public Binding otpVerificationBinding(Queue otpVerificationQueue, DirectExchange otpVerificationExchange) {
+        return BindingBuilder.bind(otpVerificationQueue)
+                .to(otpVerificationExchange)
+                .with("user.otp.routingkey");
+    }
+
+
+
     @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
