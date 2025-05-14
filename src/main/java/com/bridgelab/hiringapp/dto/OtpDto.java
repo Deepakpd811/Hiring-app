@@ -10,6 +10,10 @@ import lombok.Data;
 @Builder
 @Data
 public class OtpDto {
+
+    @NotNull(message = "Email cant be empty")
+    private String email;
+
     @NotNull(message = "OTP cant be empty")
     private String otp;
 }

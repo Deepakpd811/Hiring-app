@@ -1,18 +1,16 @@
 package com.bridgelab.hiringapp.service;
 
-import com.bridgelab.hiringapp.dto.LoginDto;
-import com.bridgelab.hiringapp.dto.OtpDto;
-import com.bridgelab.hiringapp.dto.RegisterDto;
+import com.bridgelab.hiringapp.dto.*;
 import com.bridgelab.hiringapp.entity.User;
-import com.bridgelab.hiringapp.exception.CandidateNotFoundException;
 import com.bridgelab.hiringapp.exception.EmailAlreadyExistException;
 import com.bridgelab.hiringapp.exception.InvalidException;
+import com.bridgelab.hiringapp.exception.UserNotFoundException;
 import com.bridgelab.hiringapp.repository.UserRepository;
 import com.bridgelab.hiringapp.utils.JwtUtil;
 import com.bridgelab.hiringapp.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -42,7 +41,6 @@ public class AuthService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyExistException("User already registered");
         }
-
 
         String otp = otpUtil.generateOtp();
 
@@ -86,24 +84,58 @@ public class AuthService {
         return Map.of("token", jwt);
     }
 
-    public String otpVerify(Long id, OtpDto otpDto) {
+    public String otpVerify(OtpDto otpDto)  {
 
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> userEL = userRepository.findByEmail(otpDto.getEmail());
 
-        if(user.isEmpty()){
-            throw new CandidateNotFoundException(id,"User not found");
+        if(userEL.isEmpty()){
+            throw new UserNotFoundException("User Not found");
         }
 
-        String otp = otpDto.getOtp();
-        System.out.println(otp);
+        User user = userEL.get();
 
-        boolean otpVerification = otpUtil.verifyOtp(user.get().getOtp(), otp, user.get().getOtpGeneratedAt());
+        boolean otpVerification = otpUtil.verifyOtp(user.getOtp(), otpDto.getOtp(), user.getOtpGeneratedAt());
 
         if (otpVerification) {
-            user.get().setOtpVerified(true);
-            userRepository.save(user.get());
+            user.setOtpVerified(true);
+            userRepository.save(user);
             return "User otp Verified  successfully";
         }
+
+        return "User otp not Verified ";
+    }
+
+    // send otp forgot password
+    public String forgotPassword(ForgotPasswordDto fdto)  {
+
+        User user = userRepository.findByEmail(fdto.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+
+        String otp = otpUtil.generateOtp();
+        user.setOtp(otp);
+        user.setOtpGeneratedAt(LocalDateTime.now());
+        user.setOtpVerified(false);
+
+        userRepository.save(user);
+        otpUtil.sendOtpEmail(fdto.getEmail(), otp);
+
+        return "User otp not Verified ";
+    }
+
+    public String resetPassword(ResetPasswordDto rdto)  {
+
+        User user = userRepository.findByEmail(rdto.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+
+        if (!user.isOtpVerified()) {
+            throw new InvalidException("OTP is not verified");
+        }
+
+        user.setPassword(passwordEncoder.encode(rdto.getNewPassword()));
+        user.setOtp(null); // Invalidate OTP
+        user.setOtpVerified(true);
+        user.setOtpGeneratedAt(null);
+        userRepository.save(user);
 
         return "User otp not Verified ";
     }

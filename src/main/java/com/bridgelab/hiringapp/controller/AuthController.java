@@ -1,9 +1,6 @@
 package com.bridgelab.hiringapp.controller;
 
-import com.bridgelab.hiringapp.dto.ApiResponseDto;
-import com.bridgelab.hiringapp.dto.LoginDto;
-import com.bridgelab.hiringapp.dto.OtpDto;
-import com.bridgelab.hiringapp.dto.RegisterDto;
+import com.bridgelab.hiringapp.dto.*;
 import com.bridgelab.hiringapp.service.AuthService;
 import com.bridgelab.hiringapp.utils.BuildResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,11 +29,21 @@ public class AuthController {
         return BuildResponse.success(data,"Token generated", request.getRequestURI());
     }
 
-    @PostMapping("/{id}/otp-verify")
-    public ResponseEntity<ApiResponseDto> verify(HttpServletRequest request, @Valid @RequestBody OtpDto otpDto, @PathVariable Long id) {
+    @PostMapping("/otp-verify")
+    public ResponseEntity<ApiResponseDto> verify(HttpServletRequest request, @Valid @RequestBody OtpDto otpDto) {
+        String msg =authService.otpVerify(otpDto);
+        return BuildResponse.success(null,msg, request.getRequestURI());
+    }
 
+    @PostMapping("/forget-password")
+    public ResponseEntity<ApiResponseDto> forgotPassword(HttpServletRequest request, @Valid @RequestBody ForgotPasswordDto dto) {
+        String msg =authService.forgotPassword(dto);
+        return BuildResponse.success(null,msg, request.getRequestURI());
+    }
 
-        String msg =authService.otpVerify(id,otpDto);
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponseDto> forgotPassword(HttpServletRequest request, @Valid @RequestBody ResetPasswordDto dto) {
+        String msg =authService.resetPassword(dto);
         return BuildResponse.success(null,msg, request.getRequestURI());
     }
 }

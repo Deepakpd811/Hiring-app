@@ -124,6 +124,19 @@ public class GlobalExceptionHandler   {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponseDto> UserNotFound(UserNotFoundException ex, HttpServletRequest request) {
+        ApiResponseDto response = ApiResponseDto.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .message(ex.getMessage())
+                .error("Bad Request")
+                .path(request.getRequestURI())
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 
 
