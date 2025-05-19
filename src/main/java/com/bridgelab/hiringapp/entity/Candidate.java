@@ -20,7 +20,7 @@ public class Candidate {
 
 
     public enum Status {
-        APPLIED, INTERVIEWED, OFFERED, ONBOARDED
+        APPLIED, INTERVIEWED, OFFERED, ONBOARDED, REJECTED
     }
 
     public enum OnboardStatus {

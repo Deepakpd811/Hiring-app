@@ -37,29 +37,45 @@ public class AuthService {
     private OtpUtil otpUtil;
 
     public String register(RegisterDto request) {
-
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistException("User already registered");
-        }
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         String otp = otpUtil.generateOtp();
+        LocalDateTime now = LocalDateTime.now();
 
-        User user = User.builder()
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
+
+            // If OTP is still valid, throw exception
+            if (existingUser.getOtpGeneratedAt().plusMinutes(5).isAfter(now)) {
+                throw new EmailAlreadyExistException("User already registered and OTP still valid.");
+            }
+
+            // OTP expired, resend
+            existingUser.setOtp(otp);
+            existingUser.setOtpGeneratedAt(now);
+            existingUser.setOtpVerified(false);
+            otpUtil.sendOtpEmail(existingUser.getEmail(), otp);
+            userRepository.save(existingUser);
+
+            return "OTP expired. New OTP sent.";
+        }
+
+        // Register new user
+        User newUser = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .otp(otp)
                 .isOtpVerified(false)
-                .otpGeneratedAt(LocalDateTime.now())
+                .otpGeneratedAt(now)
                 .build();
 
-        otpUtil.sendOtpEmail(user.getEmail(), otp);
+        otpUtil.sendOtpEmail(newUser.getEmail(), otp);
+        userRepository.save(newUser);
 
-        userRepository.save(user);
-
-        return "User registered successfully";
-
+        return "User registered successfully. OTP sent.";
     }
+
 
 
     public Map<String, String> login(LoginDto request) {

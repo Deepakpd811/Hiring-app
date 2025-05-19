@@ -31,6 +31,7 @@ public class AuthController {
 
     @PostMapping("/otp-verify")
     public ResponseEntity<ApiResponseDto> verify(HttpServletRequest request, @Valid @RequestBody OtpDto otpDto) {
+        System.out.println("otp verified");
         String msg =authService.otpVerify(otpDto);
         return BuildResponse.success(null,msg, request.getRequestURI());
     }
