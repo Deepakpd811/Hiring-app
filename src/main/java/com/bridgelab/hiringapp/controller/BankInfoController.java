@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class BankInfoController {
     @Autowired
     BankInfoService bankInfoService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("{id}/bank-info")
     public ResponseEntity<ApiResponseDto> updateStatusById(HttpServletRequest request, @Valid @RequestBody BankInfoDto bankInfoDto,
                                                            @PathVariable Long id) {

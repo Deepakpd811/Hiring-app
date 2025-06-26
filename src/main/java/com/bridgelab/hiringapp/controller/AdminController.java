@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/api/candidates")
-public class CandidateController {
+public class AdminController {
 
     @Autowired
     private CandidateService candidateService;
@@ -32,7 +32,7 @@ public class CandidateController {
     public ResponseEntity<ApiResponseDto> getAllCandidates(HttpServletRequest request,
                                                            @RequestParam(defaultValue = "0") int page,
                                                            @RequestParam(defaultValue = "10") int size,
-                                                           @RequestParam(defaultValue = "name") String sortBy) {
+                                                           @RequestParam(defaultValue = "firstName") String sortBy) {
         Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
         Page<Candidate> candidates = candidateService.getCandidateData(pageable);
         return BuildResponse.success(candidates, "List of all candidates", request.getRequestURI());
